@@ -1,0 +1,79 @@
+﻿@model IEnumerable<MvcApplicationA2.Models.Product>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Products</h2>
+
+@using (Html.BeginForm("Index", "Products", FormMethod.Get))
+{
+    <table class="table">
+        <tr id="border23">
+            <td>
+                Category :
+            </td>
+            <td>
+                @Html.DropDownList("ddlcategory", "All" )
+             </td>
+              <td>
+                  <input type="submit" value="Filter" />
+              </td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td>
+                 <a href="@Url.Action("Index", "ShoppingCart")" class="btn btn-default" id="send1">View Cart</a>
+             </td>
+          </tr>
+          <tr>
+            <th>
+                  @Html.DisplayNameFor(model => model.CategoryID)
+            </th>
+            <th>
+                  @Html.DisplayNameFor(model => model.Title)
+             </th>
+              <th>
+                @Html.DisplayNameFor(model => model.ShortDescription)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.LongDescription)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ImageUrl)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Price)
+            </th>
+            <th></th>
+        </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.CategoryID)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Title)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ShortDescription)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LongDescription)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ImageUrl)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Price)
+            </td>
+            <td>
+                @Html.ActionLink("Add to cart", "EnterAmount", "Products", new { id = item.ProductID }, new { @class = "btn btn-default" })
+            </td>
+        </tr>
+    }
+
+</table>
+}

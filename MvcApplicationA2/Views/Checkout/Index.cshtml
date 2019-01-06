@@ -1,0 +1,253 @@
+﻿@model MvcApplicationA2.Models.OrderDetail
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<script src="~/Scripts/jquery-2.1.1.min.js"></script>
+<script src="~/Scripts/jquery.ForceBankingCard.js"></script>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+    <title>@ViewBag.Title - My ASP.NET Shopping Application</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+
+</head>
+<body onload="preloadFunc()">
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                @Html.ActionLink("MyComputer", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li>@Html.ActionLink("Home", "Index", "Home")</li>
+                    <li>@Html.ActionLink("Products", "Index", "Products")</li>
+                    <li>@Html.ActionLink("View Cart", "Index", "ShoppingCart")</li>
+                    <li>@Html.ActionLink("About", "About", "Home")</li>
+                    <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
+                </ul>
+
+                @using Microsoft.AspNet.Identity
+                @if (Request.IsAuthenticated)
+                {
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            @Html.ActionLink("Check Out", "Index", "Checkout")
+                        </li>
+                        <li id="nameBar">
+                            @Html.Encode("Welcome " + User.Identity.Name + "!")
+                        </li>
+                        <li>
+                            @Html.ActionLink("Log Out", "Logout", "Login")
+                        </li>
+                    </ul>
+                }
+                else
+                {
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>@Html.ActionLink("Register", "Register", "Login", routeValues: null, htmlAttributes: new { id = "registerLink" })</li>
+                        <li>@Html.ActionLink("Log in", "Index", "Login", routeValues: null, htmlAttributes: new { id = "loginLink" })</li>
+                    </ul>
+                }
+
+            </div>
+        </div>
+    </div>
+    <div class="container body-content">
+        <h2>Checking Out</h2>
+        <h4>Enter Shipping Information</h4>
+        <hr/>        
+        <script type="text/javascript">
+            $(document).ready(function () {
+                 var ar = false;
+                $("#sending").click(function (evt) {                 
+                    if (ar == false) {
+                        $("#errmsg").html("Credit Card Number is Invalid!").show();
+                        evt.preventDefault();
+                        return false;
+                    }
+                    else {
+                        $("#Confirm").html("Credit Card Number is Valid!").show();
+                        return true;
+                    }
+                });
+               
+                $("#cardNumber11").ForceBankingCard({
+                    onkeyUp: function (data) {
+                        $(".cardList img").css({ "opacity": "1" });
+                        if (typeof data.CardNetwork !== "undefined")
+                            $(".cardList img").not("." + data.CardNetwork).css({ "opacity": "0.2" });
+                        if (data.Valid) {
+                            $("#errmsg").html("").hide();
+                            $("#Confirm").html("Credit Card Number is Valid").show();
+                            ar = true;
+                        }
+                        else {
+                            $("#Confirm").html("").hide();
+                            $("#errmsg").html("Credit Card Number is Invalid").show();
+                            ar = false;
+                        }
+                    }
+                });           
+            });
+        </script>
+        @using (Html.BeginForm("Index", "Checkout", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+        {
+            @Html.AntiForgeryToken()
+            @Html.ValidationSummary(true)
+
+            <div class="form-group">
+                <label class="col-md-2 control-label">First Name</label>
+                <div class="col-md-10">
+                    @Html.TextBoxFor(m => m.FirstName, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.FirstName, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-2 control-label">Last Name</label>
+                <div class="col-md-10">
+                    @Html.TextBoxFor(m => m.LastName, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.LastName, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-2 control-label">Address</label>
+                <div class="col-md-10">
+                    @Html.TextBoxFor(m => m.Address, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.Address, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-2 control-label">City</label>
+                <div class="col-md-10">
+                    @Html.DropDownListFor(m => m.City, new List<SelectListItem>
+                    {
+                        new SelectListItem{Text="Sydney",Value="Sydney"},
+                        new SelectListItem{Text="Melbourne",Value="Melbourne"},
+                        new SelectListItem{Text="Brisbane",Value="Brisbane"},
+                        new SelectListItem{Text="Perth",Value="Perth"},
+                        new SelectListItem{Text="Adelaide",Value="Adelaide"},
+                        new SelectListItem{Text="Hobart",Value="Hobart"},
+                    }, "Select City", new { @class = "form-control" }
+                    )
+                    <p>
+                        @Html.ValidationMessageFor(m => m.City, "", new { @class = "text-danger" })
+                    </p>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-2 control-label">State</label>
+                <div class="col-md-10">
+                    @Html.DropDownListFor(m => m.State, new List<SelectListItem>
+                    {
+                        new SelectListItem{Text="New South Wales",Value="New South Wales"},
+                        new SelectListItem{Text="Victoria",Value="Victoria"},
+                        new SelectListItem{Text="Queensland",Value="Queensland"},
+                        new SelectListItem{Text="Western Australia",Value="Western Australia"},
+                        new SelectListItem{Text="South Australia",Value="South Australia"},
+                        new SelectListItem{Text="Tasmania",Value="Tasmania"},
+                    }, "Select State", new { @class = "form-control" }
+                    )
+                    <p>
+                        @Html.ValidationMessageFor(m => m.State, "", new { @class = "text-danger" })
+                    </p>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-2 control-label">Post Code</label>
+                <div class="col-md-10">
+                    @Html.TextBoxFor(m => m.PostCode, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.PostCode, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <hr />
+            <div class="form-group">
+                <label class="col-md-2 control-label">Credit Cart Details</label>
+                <div class="col-md-10">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-2 control-label">Credit Cart Number</label>
+                <div class="col-md-10">
+                    @Html.TextBoxFor(m => m.CreditCard, new { id = "cardNumber11", @class = "form-control" })
+                    <span id="errmsg"></span>
+                    <span id="Confirm"></span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-2 control-label">Expiry Date</label>
+                <div class="col-md-10">
+                    @Html.DropDownListFor(m => m.month, new List<SelectListItem>
+            {
+                new SelectListItem{Text="January",Value="1"},
+                new SelectListItem{Text="February",Value="2"},
+                new SelectListItem{Text="March",Value="3"},
+                new SelectListItem{Text="April",Value="4"},
+                new SelectListItem{Text="May",Value="5"},
+                new SelectListItem{Text="June",Value="6"},
+                new SelectListItem{Text="July",Value="7"},
+                new SelectListItem{Text="August",Value="8"},
+                new SelectListItem{Text="September",Value="9"},
+                new SelectListItem{Text="October",Value="10"},
+                new SelectListItem{Text="November",Value="11"},
+                new SelectListItem{Text="December",Value="12"},              
+            }, "Month", new { @class = "form-control4" }
+            )
+                    /
+
+                    @Html.DropDownListFor(m => m.year, new List<SelectListItem>
+                    {
+                        new SelectListItem{Text="2014",Value="2014"},
+                        new SelectListItem{Text="2015",Value="2015"},
+                        new SelectListItem{Text="2016",Value="2016"},
+                        new SelectListItem{Text="2017",Value="2017"},
+                        new SelectListItem{Text="2018",Value="2018"},
+                        new SelectListItem{Text="2019",Value="2019"},
+                        new SelectListItem{Text="2020",Value="2020"},
+                    }, "Year", new { @class = "form-control5" }
+                    )                                     
+                   <b>CVC</b>
+                    @Html.TextBoxFor(m => m.cvc, new { @class = "form-control3" })                                      
+                    @Html.ValidationMessageFor(m => m.cvc, "", new { @class = "text-danger" })
+                    <p>
+                        @Html.ValidationMessageFor(m => m.month, "", new { @class = "text-danger" })
+                        <br/>
+                        @Html.ValidationMessageFor(m => m.year, "", new { @class = "text-danger" })                        
+                    </p>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <div class="cardList">
+                        <img class="AmericanExpress" src="~/imgs/cardAmericanExpress.png">
+                        <img class="DinersClubCarteBlanche" src="~/imgs/cardDinersClubCarteBlanche.png">
+                        <img class="Discover" src="~/imgs/cardDiscover.png">
+                        <img class="MasterCard" src="~/imgs/cardMasterCard.png">
+                        <img class="Visa" src="~/imgs/cardVisa.png">
+                        <img class="VisaElectron" src="~/imgs/cardVisaElectron.png">
+                    </div>
+                    </div>
+                </div>
+                    <div class="form-group">
+                        <div class="col-md-offset-2 col-md-10">
+                            <input type="submit" value="Check Out" class="btn btn-default" id="sending" />
+                        </div>
+                    </div>
+                    }               
+                    <hr />
+                    <footer>
+                        <p>&copy; @DateTime.Now.Year - My ASP.NET Shopping Application</p>
+                    </footer>
+                </div>
+</body>
+</html>

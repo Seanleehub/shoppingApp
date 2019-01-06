@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<mvcSiteMap xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xmlns="http://mvcsitemap.codeplex.com/schemas/MvcSiteMap-File-4.0"
+            xsi:schemaLocation="http://mvcsitemap.codeplex.com/schemas/MvcSiteMap-File-4.0 MvcSiteMapSchema.xsd">
+
+   <mvcSiteMapNode title="Home" controller="Home" action="Index">
+       <mvcSiteMapNode title="About" controller="Home" action="About"/>
+          <mvcSiteMapNode title="Contact" controller="Home" action="Contact"/>   
+        <mvcSiteMapNode title="Products" controller="Products" action="Index">
+         <mvcSiteMapNode title="ViewProduct" controller="Products" action="EnterAmount"/>
+          <mvcSiteMapNode title="Login" controller="Login" action="Login">
+          <mvcSiteMapNode title="Register" controller="Login" action="Register"/>
+          <mvcSiteMapNode title="Shopping Cart" controller="ShoppingCart" action="Index">
+          <mvcSiteMapNode title="Check Out" controller="Checkout" action="Index">
+          <mvcSiteMapNode title="Summary" controller="Checkout" action="Completed"/>
+          </mvcSiteMapNode>
+          </mvcSiteMapNode>
+         </mvcSiteMapNode>
+        </mvcSiteMapNode>
+      </mvcSiteMapNode>
+  </mvcSiteMap>
+
